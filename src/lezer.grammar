@@ -1,0 +1,77 @@
+@precedence {
+  comparison_expression @left,
+  in_expression @left, binary_expression @left,
+  enumeration_item @right, atom_paren @right
+}
+
+@top PreviewUnit { (Name Colon)? CompileUnit }
+
+CompileUnit { expression | ScopedExpression }
+
+expression {
+    ComparisonExpression
+  | InExpression
+  | BinaryExpression
+  | AtomExpression
+}
+
+ScopedExpression { expression Scope LParen expression? RParen }
+
+ComparisonExpression { expression !comparison_expression ComparisonOp expression }
+InExpression { expression !in_expression In Enumeration }
+BinaryExpression { expression !binary_expression Times expression }
+
+AtomExpression {
+    IntegerLiteral
+  | VariableAtom
+}
+
+VariableAtom {
+    AtomParen
+  | CumulateFunc
+}
+
+Enumeration {
+    (LParen EnumerationItem (Comma EnumerationItem)* RParen)
+  | Range
+}
+
+EnumerationItem { !enumeration_item expression }
+
+Range {
+    expression Colon expression
+  | expression Colon
+  | Colon expression
+}
+
+AtomParen { !atom_paren LParen expression RParen }
+
+CumulateFunc { Cumulate LParen expression Comma Name (Comma expression)? RParen }
+
+@tokens {
+  @precedence {
+    Cumulate,
+    In,
+    ComparisonOp,
+    Name
+  }
+
+  Cumulate { "cumulate" }
+  
+  In { "in" }
+
+  Colon { ":" }
+  Comma { "," }
+  Scope { "@" }
+  Times { "*" }
+  LParen { "(" }
+  RParen { ")" }
+
+  ComparisonOp { ">=" | ">" | "<=" | "<" | "==" | "=" | "!=" | "<>" | "indef" }
+
+  IntegerLiteral { $[0-9]+ }
+
+  Name { $[a-zA-Z_]+ ![\r\n\t .:;,'\+\-\*\/^&\(\)\]\[=\!><]* }
+}
+
+@detectDelim

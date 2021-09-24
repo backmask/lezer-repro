@@ -1,0 +1,13 @@
+diff --git a/node_modules/@lezer/lr/dist/index.js b/node_modules/@lezer/lr/dist/index.js
+index 867db81..9bbaa65 100644
+--- a/node_modules/@lezer/lr/dist/index.js
++++ b/node_modules/@lezer/lr/dist/index.js
+@@ -120,6 +122,8 @@ class Stack {
+             let baseStateID = this.stack[base - 3];
+             this.state = parser.getGoto(baseStateID, type, true);
+         }
++        if (base < 0)
++            throw new Error('Negative base, the code will stall');
+         while (this.stack.length > base)
+             this.stack.pop();
+         this.reduceContext(type, start);

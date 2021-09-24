@@ -1,0 +1,36 @@
+diff --git a/node_modules/@lezer/generator/dist/index.cjs b/node_modules/@lezer/generator/dist/index.cjs
+index a1393c2..312615e 100644
+--- a/node_modules/@lezer/generator/dist/index.cjs
++++ b/node_modules/@lezer/generator/dist/index.cjs
+@@ -602,10 +602,10 @@ class State$1 {
+         }
+     }
+     closure() {
+-        let result = [];
++        let result = [], seen = Object.create(null);
+         function explore(state) {
+-            if (result.includes(state))
+-                return;
++            if (seen[state.id]) return
++            seen[state.id] = true
+             // States with only epsilon edges and no accepting term that
+             // isn't also in the next states are left out to help reduce the
+             // number of unique state combinations
+diff --git a/node_modules/@lezer/generator/dist/index.js b/node_modules/@lezer/generator/dist/index.js
+index ce391da..aaf14f5 100644
+--- a/node_modules/@lezer/generator/dist/index.js
++++ b/node_modules/@lezer/generator/dist/index.js
+@@ -598,10 +598,10 @@ class State$1 {
+         }
+     }
+     closure() {
+-        let result = [];
++        let result = [], seen = Object.create(null);
+         function explore(state) {
+-            if (result.includes(state))
+-                return;
++            if (seen[state.id]) return
++            seen[state.id] = true
+             // States with only epsilon edges and no accepting term that
+             // isn't also in the next states are left out to help reduce the
+             // number of unique state combinations
