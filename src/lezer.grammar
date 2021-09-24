@@ -21,9 +21,15 @@ ComparisonExpression { expression !comparison_expression ComparisonOp expression
 InExpression { expression !in_expression In Enumeration }
 BinaryExpression { expression !binary_expression Times expression }
 
+OnClause {
+  On LParen expression (Comma expression)+ RParen
+}
+
 AtomExpression {
     IntegerLiteral
   | VariableAtom
+  | ModifierAtom
+  | AttributeAtom
 }
 
 VariableAtom {
@@ -48,26 +54,40 @@ AtomParen { !atom_paren LParen expression RParen }
 
 CumulateFunc { Cumulate LParen expression Comma Name (Comma expression)? RParen }
 
+ModifierAtom { AtomExpression LBracket SelectExpression (Semicolon SelectExpression)* RBracket }
+
+AttributeAtom { AtomExpression Point Name }
+
+SelectExpression { Select Aggregation? Colon expression }
+
+Aggregation { Name OnClause? }
+
 @tokens {
   @precedence {
     Cumulate,
-    In,
+    In, On,
     ComparisonOp,
+    Select,
     Name
   }
 
   Cumulate { "cumulate" }
-  
-  In { "in" }
 
+  In { "in" }
+  On { "on" }
+
+  Point { "." }
   Colon { ":" }
+  Semicolon { ";" }
   Comma { "," }
   Scope { "@" }
   Times { "*" }
+  LBracket { "[" }
+  RBracket { "]" }
   LParen { "(" }
   RParen { ")" }
-
   ComparisonOp { ">=" | ">" | "<=" | "<" | "==" | "=" | "!=" | "<>" | "indef" }
+  Select { "select" }
 
   IntegerLiteral { $[0-9]+ }
 
